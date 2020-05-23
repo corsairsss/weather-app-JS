@@ -1,0 +1,19 @@
+<div class="dayItem swiper-slide">
+    <p class="dayItem__weekDay">{{dayString}}</p>
+    <p class="dayItem__dayMonth">{{day}} {{month}}</p>
+    <img src="https://openweathermap.org/img/w/{{icon}}.png" alt="" />
+    <div class="min-max-block">
+        <div class="min5">
+            <div>min</div>
+            <span class="min-value">{{temMin}}</span>
+            <sup class="sup">°</sup>
+        </div>
+        <div class="vertical-line"></div>
+        <div class="max5">
+            <div>max</div>
+            <span class="max-value">{{temMax}}</span>
+            <sup class="sup">°</sup>
+        </div>
+    </div>
+    <a href="#" class="dayItem__moreInfo">more info </a>
+</div>

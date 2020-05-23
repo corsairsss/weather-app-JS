@@ -1,0 +1,23 @@
+<div class="icon-current-weather">
+    <img src="https://openweathermap.org/img/w/01d.png" alt="" class="icon" />
+</div>
+<h3 class="current-weather__city">{{name}},{{sys.country}}</h3>
+<div class="temperature-today">
+    <div class="current-temperature">
+        <span>{{main.temp}}</span>
+        <sup class="degree-symbol">°</sup>
+    </div>
+    <div class="min-max-block">
+        <div class="min">
+            <div>min</div>
+            <span>{{main.temp_min}}</span>
+            <sup>°</sup>
+        </div>
+        <div class="vertical-line"></div>
+        <div class="max">
+            <div>max</div>
+            <span>{{main.temp_max}}</span>
+            <sup>°</sup>
+        </div>
+    </div>
+</div>
