@@ -15,9 +15,16 @@
   height: min-content;
   text-align: center;
 }
-.search-input {
-  margin-top: 28px;
+.search-form {
+  padding-top: 28px;
+  position: relative;
+  margin: 0 auto;
   width: 280px;
+  height: 48px;
+}
+.search-input {
+  padding-left: 40px;
+  width: inherit;
   height: 48px;
   border: none;
   border-radius: 20px;
@@ -26,34 +33,67 @@
   border: 1px solid #797e86;
   outline: 1px;
 }
-.favorite-city {
-  margin-top: 16px;
-  margin-bottom: 50px;
+
+.icon-location {
+  position: absolute;
+  left: 8px;
+  top: 40px;
+}
+.btn-favoriteCity {
+  position: absolute;
+  top: 40px;
+  right: 4px;
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+
+.main-containet-favCity {
   width: 280px;
-  margin: 16px auto 50px auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(82px, 83px));
-  justify-content: center;
-  grid-column-gap: 10px;
+  height: 40px;
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 35px;
+}
+.favorite-city {
+  /* padding-top: 26px; */
+  /* width: 280px; */
+  /* display: grid; */
+  /* grid-template-columns: repeat(auto-fill, minmax(82px, 83px)); */
+  /* justify-content: center; */
+  /* grid-column-gap: 10px; */
+}
+
+.container-favorite-city {
+  width: 280px;
+  margin: 0 auto;
+  /* padding-top: 20px; */
 }
 .favotite-city__item {
   display: grid;
-  grid-template-columns: min-content min-content;
+  grid-template-columns: 1fr min-content;
   justify-content: center;
   align-items: center;
-  grid-column-gap: 25px;
+  grid-column-gap: 4px;
   width: 82px;
   height: 27px;
   background-color: #102136;
-  opacity: 0.47;
+  opacity: 0.6;
   border-radius: 20px;
   color: #ffffff;
   font-size: 12px;
   line-height: 27px;
   text-align: center;
 }
+.favorite-city__name {
+  opacity: none;
+}
 .close {
-  opacity: 1;
+  background-color: transparent;
+  cursor: pointer;
+  opacity: 0.8;
+  border: none;
+  outline: none;
 }
 /*  */
 .line-up,
@@ -75,6 +115,7 @@
 
 .current-weather {
   margin: 0 auto;
+  margin-top: 50px;
   width: 280px;
   height: 190px;
   background-color: #102136;
@@ -250,4 +291,7 @@
   padding-top: 10px;
   font-size: 12px;
   color: hsla(0, 0%, 100%, 0.3);
+}
+.weather-info {
+  height: 200px;
 }

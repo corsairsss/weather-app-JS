@@ -9,22 +9,32 @@
   </head>
   <body>
     <section class="container">
-      <input
-        type="search"
-        class="search-input"
-        placeholder="Enter the city"
-        name="input-search"
-      />
-      <ul class="favorite-city">
-        <!-- тут відображатимуться улюблені міста -->
-        <li class="favotite-city__item">
-          <span class="favorite-city__name">Kyiv</span>
-          <div class="close">
-            <div class="line-up"></div>
-            <div class="line-bottom"></div>
+      <form class="search-form">
+        <img
+          class="icon-location"
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABC0lEQVR4Ae2VAQYCURCGBwFCgLAIi9ABFgEBAoSO0AE6RAhhDxFCCBAghA4QAixCCCGEGnwYMM2rUPTxW3b/eeO9eTMr38Yd/VaCQlWqdibBRjVVdeQNctWaBT3NVU1JpKs6q+48J7xroR67uuKpVG2JgPFC4FLVcLwZx0WS2E62ZusRaiQJxfQxHlV1iZOZ43ILv8A0lnRKYqfiUGHKJZ0esRungdBrtLx1PpEgi6xz4kMm6XSJ3YnDCtNI0pkQW4rDENOB+x2lYTq/eNY0e4wzibMkZh2dnjeTxNtJne5lZsWv98AkOVATW/icZjziuVDkJApzXJ62oUnq1GTI7TqZRSvGSv//T36bBzEUdCoOd0ikAAAAAElFTkSuQmCC"
+          alt=""
+        />
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Enter the city"
+          name="inputSearch"
+        />
+        <button class="btn-favoriteCity js-btnFavoriteCity" type="button">
+          <img
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABD0lEQVR4Ae3TAWRCURSA4SEECEMIAwQIwxAiDAEAQhhCgGEIMIQAQxgGCCFAgAEghDAMYXgID2F4uPtQcDfqtQLbzwc4nINz8eeqc8XZmjDkLFXISCly8gaErS4nrUjCnIQlJ61NoEOfQJ1fVaZKgwVripTJmNGgSpm9PfJGQiA2YNeYQOyDJT2+VYgGh/Ro06AUXdekwz0v0dzeSwLLA0+vsiKjx0HdkZFQ2/PZKRta5KrJZuuSuCoZCdcc1YyUnyoRGHF0KVN2NaNtFyw5qhqBByqMCWSMKPFEoETuugQmbMgYMSawZkqgRa7iZ5pzw65b3qMnzN2KlC4F4or0+eSVXFV45pJ9XTGmQP7++wJQV1x6Xh2hZQAAAABJRU5ErkJggg=="
+            alt=""
+          />
+        </button>
+      </form>
+      <div class="main-containet-favCity">
+        <div class="swiper-container container-favorite-city">
+          <div class="favorite-city swiper-wrapper">
+            <!-- тут відображатимуться улюблені міста -->
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
 
       <div class="current-weather js-current-weather">
         <!-- тут буде головна актуальна погода  min and max temperature.-->
@@ -56,22 +66,20 @@
             alt="sunrise"
             class="iconsun"
           />
-          <span class="sunrise">05:25</span>
+          <span class="sunrise"></span>
           <img
             src="data:image/svg+xml;base64,PHN2ZyBpZD0iQ2FwYV8xIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA1MTIgNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIHdpZHRoPSI1MTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGc+PGc+PHBhdGggZD0ibTI0MSAxMTQuOTU0aDMwdjExMWgtMzB6IiBmaWxsPSIjZmZlNDc3Ii8+PC9nPjxnPjxwYXRoIGQ9Im0yNTYgMTE0Ljk1NGgxNXYxMTFoLTE1eiIgZmlsbD0iI2ZmZGE0NCIvPjwvZz48cGF0aCBkPSJtNDEzLjEyOCAzOTcuOTUyYy03LjU1Ni04MC4xMzYtNzUuMDE1LTE0Mi44NC0xNTcuMTI4LTE0Mi44NHMtMTQ5LjU3MiA2Mi43MDQtMTU3LjEyOCAxNDIuODRoLTk4Ljg3MnYzMGg1MTJ2LTMweiIgZmlsbD0iI2ZmYjY1NSIvPjxwYXRoIGQ9Im00MTMuMTI4IDM5Ny45NTJjLTcuNTU2LTgwLjEzNi03NS4wMTUtMTQyLjg0LTE1Ny4xMjgtMTQyLjg0djE3Mi44NDFoMjU2di0zMGgtOTguODcyeiIgZmlsbD0iI2ZmNzAzNyIvPjxnPjxnPjxwYXRoIGQ9Im02My42NjcgNDU3Ljk1MmgzODQuNjY2djMwaC0zODQuNjY2eiIgZmlsbD0iI2ZmYjY1NSIvPjwvZz48L2c+PGc+PHBhdGggZD0ibTI1NiA0NTcuOTUyaDE5Mi4zMzN2MzBoLTE5Mi4zMzN6IiBmaWxsPSIjZmY3MDM3Ii8+PC9nPjxnPjxwYXRoIGQ9Im0zMy43OTQgMzAwLjI5aDMwdjY5LjAwMWgtMzB6IiBmaWxsPSIjZmZiNjU1IiB0cmFuc2Zvcm09Im1hdHJpeCguMzUzIC0uOTM2IC45MzYgLjM1MyAtMjgxLjY3OCAyNjIuMzA2KSIvPjwvZz48Zz48cGF0aCBkPSJtMTU1LjU5MSAxNzQuMTEyaDMwdjY5LjAwMWgtMzB6IiBmaWxsPSIjZmZiNjU1IiB0cmFuc2Zvcm09Im1hdHJpeCguOTIzIC0uMzg2IC4zODYgLjkyMyAtNjcuMjQzIDgxLjkwMikiLz48L2c+PGc+PHBhdGggZD0ibTMwNi45MDggMTkzLjYxMmg2OS4wMDF2MzBoLTY5LjAwMXoiIGZpbGw9IiNmZjcwMzciIHRyYW5zZm9ybT0ibWF0cml4KC4zODYgLS45MjMgLjkyMyAuMzg2IDE3LjI5NiA0NDMuMTk2KSIvPjwvZz48Zz48Zz48cGF0aCBkPSJtNDI4LjcwNSAzMTkuNzkxaDY5LjAwMXYzMGgtNjkuMDAxeiIgZmlsbD0iI2ZmNzAzNyIgdHJhbnNmb3JtPSJtYXRyaXgoLjkzNiAtLjM1MyAuMzUzIC45MzYgLTg4LjM0IDE4NC45ODQpIi8+PC9nPjwvZz48Zz48Zz48cGF0aCBkPSJtNjkuNTI4IDE4NS45OGgzMHYxMTFoLTMweiIgZmlsbD0iI2ZmZTQ3NyIgdHJhbnNmb3JtPSJtYXRyaXgoLjcwNyAtLjcwNyAuNzA3IC43MDcgLTE0NS45OTUgMTMwLjQ5OCkiLz48L2c+PC9nPjxnPjxnPjxwYXRoIGQ9Im0zNzEuOTcyIDIyNi40OGgxMTF2MzBoLTExMXoiIGZpbGw9IiNmZmRhNDQiIHRyYW5zZm9ybT0ibWF0cml4KC43MDcgLS43MDcgLjcwNyAuNzA3IC00NS41NDggMzcyLjk5NykiLz48L2c+PC9nPjxwYXRoIGQ9Im0zOTYuOTU5IDk3LjQwOSA0NS45ODkgNDUuOTg5aDIxLjIxM2w0Ni4zMDQtNDYuMzA0LTIxLjIxMy0yMS4yMTItMjAuNjk3IDIwLjY5N3YtNzIuNTMxaC0zMHY3Mi41MzFsLTIwLjM4My0yMC4zODJ6IiBmaWxsPSIjMGQ5MWJkIi8+PC9nPjwvc3ZnPg=="
             alt="sunrise"
             class="iconsun"
           />
 
-          <span class="sunset">21:25</span>
+          <span class="sunset"></span>
         </div>
       </div>
       <div class="quote">
         <blockquote class="quote__block">
-          <p class="quote__text">some text</p>
-          <cite class="quote__author">
-            some author
-          </cite>
+          <p class="quote__text"></p>
+          <cite class="quote__author"> </cite>
         </blockquote>
       </div>
 
@@ -83,6 +91,7 @@
             <div class="weather-info swiper-wrapper">
               <!-- рендериться погода -->
             </div>
+            <div class="swiper-pagination"></div>
           </div>
         </div>
         <a href="#" class="chart">Show Chart</a>
