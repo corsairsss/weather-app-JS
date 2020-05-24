@@ -16,17 +16,7 @@ import regeneratorRuntime from 'regenerator-runtime';
 import quote from './quote.js';
 
 //--------------------------------------------------------
-// const mySwiper = new Swiper('.swiper-container', {
-//   slidesPerView: 3,
-//   spaceBetween: 15,
-//   freeMode: false,
-//   loop: false,
-//   pagination: {
-//     el: '.swiper-pagination',
-//     clickable: true,
-//   },
-// });
-// geolocation--------------------------------------------
+
 const getGeoPosition = options => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject, options);
