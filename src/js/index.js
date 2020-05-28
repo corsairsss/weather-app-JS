@@ -1,22 +1,25 @@
 import Swiper from 'swiper';
 import 'swiper/css/swiper.css';
-
-// import * as basicLightbox from 'basiclightbox';
-import 'basiclightbox/dist/basicLightbox.min.css';
+import notyfOptions from '../config/notyf-options.js';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
 import pixabayServices from './apiService.js';
 import openWeatherMap from './apiWeather.js';
 import fiveDays from './api5DaysWearher.js';
 import templateCurrentWeather from '../templates/weather-today.hbs';
 import templateFiveDays from '../templates/fiveDays.hbs';
 import templateFvoritCities from '../templates/favoriteCity.hbs';
+import templateWeatherDetails from '../templates/weather_info_details.hbs';
 import date from 'date-and-time';
 import '../css/normalize.css';
 import '../css/style.css';
+import '../css/spiner-overlay.css';
 import regeneratorRuntime from 'regenerator-runtime';
 import quote from './quote.js';
 
-//--------------------------------------------------------
-
+const notyf = new Notyf(notyfOptions);
+const windowWidth = window.screen.width;
+// -------------------------------------
 const getGeoPosition = options => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject, options);
@@ -27,17 +30,22 @@ getGeoPosition()
   .then(position => {
     openWeatherMap.latitude = position.coords.latitude;
     openWeatherMap.longitude = position.coords.longitude;
-
+    setTimeout(addClass, 1000);
     weatherWithGeoPosition();
-
     favoriteCityTemplate();
-    const mySwiper = new Swiper('.swiper-container', {
+    const mySwiper = new Swiper('.swiper1', {
       slidesPerView: 3,
       spaceBetween: 15,
       freeMode: false,
       loop: false,
+      breakpoints: {
+        768: {
+          slidesPerView: 4,
+          spaceBetween: 5,
+        },
+      },
       pagination: {
-        el: '.swiper-pagination',
+        el: '.sw1',
         clickable: true,
       },
     });
@@ -49,6 +57,7 @@ getGeoPosition()
 
 // ------------------------------------------------------------
 const refs = {
+  overlay: document.querySelector('.overlay'),
   mainContainer: document.querySelector('.container'),
   searchForm: document.querySelector('.search-form'),
   btnAddFavoriteCity: document.querySelector('.js-btnFavoriteCity'),
@@ -63,6 +72,8 @@ const refs = {
   fiveDaysBlock: document.querySelector('.weather-info'),
   mainblockWeatherFiveDays: document.querySelector('.container-fiveDays'),
   favoriteCityContainer: document.querySelector('.favorite-city'),
+  blockWeatherPerHour: document.querySelector('.weather-per-3hour'),
+  btnCloseMoreInfoWeather: document.querySelector('.js-close-more-info'),
 };
 let intervalId;
 //------------------   LISTENERs----------------------
@@ -71,6 +82,13 @@ refs.searchForm.addEventListener('submit', showWeather);
 refs.buttonsPeriodWeather.addEventListener('click', showAnotherDaysWearher);
 refs.btnAddFavoriteCity.addEventListener('click', addFavoriteCity);
 refs.favoriteCityContainer.addEventListener('click', getWeatherByFavoriteCity);
+refs.fiveDaysBlock.addEventListener('click', showMoreInfoWeather);
+function addClass() {
+  refs.overlay.classList.add('unvisible');
+}
+function removeClass() {
+  refs.overlay.classList.remove('unvisible');
+}
 // ---------------------------------------------------
 function showWeather(e) {
   e.preventDefault();
@@ -93,15 +111,14 @@ async function crateBackGroungImg() {
     const url = await pixabayServices.fetchArticles();
     refs.mainContainer.style.backgroundImage = `url(${url})`;
   } catch (error) {
-    refs.mainContainer.style.backgroundImage = `url(https://pixabay.com/get/55e4dd4b4c51ae14f6da8c7dda7936781439dee751516c4870267bd7974ec758bf_1280.jpg)`;
-
+    refs.mainContainer.style.backgroundImage = `url(https://pixabay.com/get/54e3d74a4c5aac14f6da8c7dda7936781439dee751516c4870267bd2964ec75db1_1280.jpg)`;
     console.dir(`error:${error}`);
   }
 }
 async function weatherWithGeoPosition() {
   try {
     const weatherGeo = await openWeatherMap.requestGeoParam();
-    showQuotes();
+
     weatherALL(weatherGeo);
   } catch (error) {
     console.log(`error:${error}`);
@@ -109,31 +126,39 @@ async function weatherWithGeoPosition() {
 }
 async function getWeatherByCity() {
   try {
+    removeClass();
+    setTimeout(addClass, 2000);
+    console.log(openWeatherMap.query);
     const objWithWeather = await openWeatherMap.fetchArticles();
     weatherALL(objWithWeather);
+  } catch (error) {
+    console.log(`error_getWeatherByCity:${error}`);
+  }
+}
+// ========================
+
+async function returnWeatherForFiveDays() {
+  try {
+    const fiveDaysObj = await fiveDays.get5DaysWeather();
+    return fiveDaysObj;
   } catch (error) {
     console.log(`error:${error}`);
   }
 }
+// ========================
 
 async function getFiveDaysWeather() {
   try {
-    const fiveDaysObj = await fiveDays.get5DaysWeather();
+    const fiveDaysObj = await returnWeatherForFiveDays();
     document.querySelector(
       '.js-city',
     ).innerHTML = `${fiveDaysObj.city.name}, ${fiveDaysObj.city.country}`;
     const listWeather = fiveDaysObj.list;
     showFiveDaysWeather(listWeather);
   } catch (error) {
-    console.log(`error:${error}`);
+    notyf.open({ type: 'badRequest' });
+    console.log(`error_getFiveDaysWeather:${error}`);
   }
-}
-
-function iconWeather(info) {
-  const icon = info.weather[0].icon;
-  const refsImgForIcon = document.querySelector('.icon');
-  const urlIcon = `https://openweathermap.org/img/w/${icon}.png`;
-  refsImgForIcon.attributes.src.nodeValue = urlIcon;
 }
 
 function dateCurrent() {
@@ -177,6 +202,7 @@ function showQuotes() {
 }
 
 function weatherALL(object) {
+  document.querySelector('.block-more-info').classList.add('unvisible');
   if (intervalId) clearInterval(intervalId);
   pixabayServices.searchquery = object.name;
   fiveDays.searchquery = object.name;
@@ -193,7 +219,7 @@ function weatherALL(object) {
     'beforeend',
     templatesHtmlWeather,
   );
-  iconWeather(object);
+  showQuotes();
   setInterval(timeCurrent, 1000);
   crateBackGroungImg();
   setTimeout(dateCurrent, 1000);
@@ -207,12 +233,16 @@ function showAnotherDaysWearher(e) {
   const nameBtn = e.target.name;
   const currentBtn = e.target;
   if (nameBtn === 'fiveDays') {
+    if (window.screen.width >= 768)
+      refs.buttonsPeriodWeather.style.paddingTop = '328px';
     currentBtn.classList.remove('current-date-time-unactive');
     e.currentTarget.children.today.classList.add('current-date-time-unactive');
     hideWeatherToday();
     getFiveDaysWeather();
   }
   if (nameBtn === 'today') {
+    refs.buttonsPeriodWeather.style.paddingTop = '25px';
+
     currentBtn.classList.remove('current-date-time-unactive');
     e.currentTarget.children.fiveDays.classList.add(
       'current-date-time-unactive',
@@ -237,9 +267,21 @@ function showWeatherToday() {
 
 function showFiveDaysWeather(arr) {
   const allDays = arr.map(elem => {
-    const dayNumber = +date.format(new Date(elem.dt * 1000), 'DD', true);
-    const dayString = date.format(new Date(elem.dt * 1000), 'dddd', true);
-    const month = date.format(new Date(elem.dt * 1000), 'MMM', true);
+    const dayNumber = +date.format(
+      new Date(elem.dt * 1000 + openWeatherMap.timeZone),
+      'DD',
+      true,
+    );
+    const dayString = date.format(
+      new Date(elem.dt * 1000 + openWeatherMap.timeZone),
+      'dddd',
+      true,
+    );
+    const month = date.format(
+      new Date(elem.dt * 1000 + openWeatherMap.timeZone),
+      'MMM',
+      true,
+    );
 
     const obj = {
       day: dayNumber,
@@ -251,37 +293,60 @@ function showFiveDaysWeather(arr) {
     };
     return obj;
   });
+  console.log(allDays);
   const arrayFivDeays = crateObjectsWithInfoWeatherForFiveDays(arr, allDays);
   fiveDaysFromTempalte(arrayFivDeays);
-  const mySwiper = new Swiper('.swiper-container', {
+  refs.btnCloseMoreInfoWeather.classList.add('unvisible');
+
+  const mySwiper = new Swiper('.swiper2', {
     slidesPerView: 3,
     spaceBetween: 15,
     freeMode: false,
     loop: false,
     pagination: {
-      el: '.swiper-pagination',
+      el: '.sw2',
       clickable: true,
+    },
+    breakpoints: {
+      768: {
+        slidesPerView: 5,
+        spaceBetween: 15,
+        pagination: {
+          el: '',
+        },
+      },
     },
   });
 }
 
 function crateObjectsWithInfoWeatherForFiveDays(arr, allDays) {
-  let dayNumber = +date.format(new Date(arr[0].dt * 1000), 'DD', true);
-  const firstDAy = allDays.filter(el => el.day === dayNumber);
-  const day1 = allDays.find(el => el.day === dayNumber);
-  dayNumber++;
-  const secondDAy = allDays.filter(el => el.day === dayNumber);
-  const day2 = allDays.find(el => el.day === dayNumber);
-  dayNumber++;
-  const thirdDAy = allDays.filter(el => el.day === dayNumber);
-  const day3 = allDays.find(el => el.day === dayNumber);
-  dayNumber++;
-  const fourDAy = allDays.filter(el => el.day === dayNumber);
-  const day4 = allDays.find(el => el.day === dayNumber);
-  dayNumber++;
-  const fiveDAy = allDays.filter(el => el.day === dayNumber);
-  const day5 = allDays.find(el => el.day === dayNumber);
+  let currDay = +date.format(
+    new Date(arr[0].dt * 1000 + openWeatherMap.timeZone),
+    'DD',
+    true,
+  );
+  let day6 = [];
+  const firstDAy = allDays.filter(el => el.day === currDay);
+  const secondDAy = allDays.slice(firstDAy.length, firstDAy.length + 8);
+  const thirdDAy = allDays.slice(firstDAy.length + 8, firstDAy.length + 16);
+  const fourDAy = allDays.slice(firstDAy.length + 16, firstDAy.length + 24);
+  const fiveDAy = allDays.slice(firstDAy.length + 24, firstDAy.length + 32);
+  const sixDAy = allDays.slice(firstDAy.length + 32);
+  console.log(sixDAy);
+  console.log(sixDAy.length);
 
+  const day1 = firstDAy[0];
+  const day2 = secondDAy[0];
+  const day3 = thirdDAy[0];
+  const day4 = fourDAy[0];
+  const day5 = fiveDAy[0];
+  if (sixDAy.length !== 0) {
+    day6 = sixDAy[0];
+    day6.temMin = Math.round(Math.min(...sixDAy.map(el => el.temMin)));
+    day6.temMax = Math.round(Math.max(...sixDAy.map(el => el.temMax)));
+    console.log(day6);
+    console.log('zero');
+  }
   day1.temMin = Math.round(Math.min(...firstDAy.map(el => el.temMin)));
   day1.temMax = Math.round(Math.max(...firstDAy.map(el => el.temMax)));
   day2.temMin = Math.round(Math.min(...secondDAy.map(el => el.temMin)));
@@ -294,7 +359,12 @@ function crateObjectsWithInfoWeatherForFiveDays(arr, allDays) {
   day5.temMax = Math.round(Math.max(...fiveDAy.map(el => el.temMax)));
 
   const objectFiveDays = [];
-  objectFiveDays.push(day1, day2, day3, day4, day5);
+  console.log(firstDAy);
+  console.log(firstDAy.length);
+  firstDAy.length === 1
+    ? objectFiveDays.push(day2, day3, day4, day5, day6)
+    : objectFiveDays.push(day1, day2, day3, day4, day5);
+
   return objectFiveDays;
 }
 
@@ -305,13 +375,22 @@ function fiveDaysFromTempalte(array) {
 }
 
 function addCityToLocalStorage() {
+  if (openWeatherMap.query === '') {
+    notyf.open({ type: 'nocity' });
+    return;
+  }
+
   if (!localStorage.getItem('city')) {
     const localArray = JSON.stringify(openWeatherMap.query);
     localStorage.setItem('city', localArray);
   }
   const cityFromLocalStorage = JSON.parse(localStorage.getItem('city'));
 
-  if (cityFromLocalStorage.includes(openWeatherMap.query)) return;
+  if (cityFromLocalStorage.includes(openWeatherMap.query)) {
+    notyf.error({ type: 'error' });
+    return;
+  }
+  notyf.open({ type: 'info' });
   const addCityToString = cityFromLocalStorage + ',' + openWeatherMap.query;
   localStorage.setItem('city', JSON.stringify(addCityToString));
 }
@@ -342,6 +421,8 @@ function getWeatherByFavoriteCity(e) {
   if (e.target.dataset.city === 'openCity') {
     openWeatherMap.searchquery = e.target.textContent;
     fiveDays.searchquery = e.target.textContent;
+    refs.btnCloseMoreInfoWeather.classList.add('unvisible');
+
     getWeatherByCity();
     getFiveDaysWeather();
   }
@@ -359,4 +440,96 @@ function removeCityFromFavorite(city) {
     localStorage.removeItem('city');
     refs.favoriteCityContainer.innerHTML = '';
   }
+}
+
+async function showMoreInfoWeather(e) {
+  const currentDay = e.target.dataset.day;
+
+  console.log(currentDay);
+  console.dir(e.currentTarget);
+  styleForDayItem(currentDay);
+  const fullObjectFromRequest = await returnWeatherForFiveDays();
+  const listWithObjectForFiveDays = fullObjectFromRequest.list;
+  console.log(listWithObjectForFiveDays);
+  const weatherOneDay = listWithObjectForFiveDays.filter(el => {
+    const dayNumber = date.format(
+      new Date(el.dt * 1000 + openWeatherMap.timeZone),
+      'D',
+      true,
+    );
+    return dayNumber === currentDay;
+  });
+  weatherOneDay.forEach(el => {
+    el.dt = date.format(
+      new Date(el.dt * 1000 + openWeatherMap.timeZone),
+      'HH:mm A',
+      true,
+    );
+    el.main.temp = Math.round(el.main.temp);
+  });
+  const itemHour = weatherOneDay
+    .map(item => templateWeatherDetails(item))
+    .join('');
+  refs.blockWeatherPerHour.insertAdjacentHTML('beforeend', itemHour);
+  refs.btnCloseMoreInfoWeather.classList.remove('unvisible');
+  refs.btnCloseMoreInfoWeather.addEventListener(
+    'click',
+    closeBlockWeatherPerHour,
+  );
+  const mySwiper = new Swiper('.swiper3', {
+    slidesPerView: 2,
+    spaceBetween: 10,
+    freeMode: false,
+    loop: false,
+    pagination: {
+      el: '.sw3',
+      clickable: true,
+    },
+    breakpoints: {
+      768: {
+        slidesPerView: 4,
+        spaceBetween: 15,
+      },
+      1280: {
+        slidesPerView: 8,
+        spaceBetween: 5,
+        pagination: {
+          el: '',
+        },
+      },
+    },
+  });
+}
+
+function styleForDayItem(currentDay) {
+  removeStyleFor5DayItem();
+  document
+    .querySelector(`.dayItem[data-day="${currentDay}"]`)
+    .classList.add('bg-dayItem');
+  document.querySelector(
+    `.dayItem__weekDay[data-day="${currentDay}"]`,
+  ).style.color = '#ff6b08';
+  document.querySelector(
+    `.dayItem__moreInfo[data-day="${currentDay}"]`,
+  ).style.color = '#ffffff';
+}
+
+function removeStyleFor5DayItem() {
+  refs.blockWeatherPerHour.innerHTML = '';
+  document.querySelector('.block-more-info').classList.remove('unvisible');
+  document
+    .querySelectorAll('.dayItem')
+    .forEach(el => el.classList.remove('bg-dayItem'));
+  document
+    .querySelectorAll('.dayItem__moreInfo')
+    .forEach(el => (el.style.color = 'hsla(0, 0%, 100%, 0.3)'));
+  document
+    .querySelectorAll('.dayItem__weekDay')
+    .forEach(el => (el.style.color = 'hsla(0, 0%, 100%, 0.54)'));
+}
+
+function closeBlockWeatherPerHour() {
+  removeStyleFor5DayItem();
+  document.querySelector('.block-more-info').classList.add('unvisible');
+  refs.btnCloseMoreInfoWeather.classList.add('unvisible');
 }

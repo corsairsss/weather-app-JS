@@ -1,0 +1,15 @@
+<div class="weather-per-3hour__item item-5weather swiper-slide">
+    <p class="item-5weather__time">{{dt}}</p>
+    {{#each weather}}
+    <img class="item-5weather__icon" src="https://openweathermap.org/img/w/{{this.icon}}.png" alt="" />
+    {{/each}}
+    <div>
+        <span class="item-5weather__temp">{{main.temp}}</span>
+        <sup class="sup">°</sup>
+    </div>
+    <div class="item-5weather__details">
+        <p class="item-5weather__preasure details-icon">{{main.pressure}}mm</p>
+        <p class="item-5weather__humidity details-icon">{{main.humidity}}%</p>
+        <p class="item-5weather__wind details-icon">{{wind.speed}}m/s</p>
+    </div>
+</div>

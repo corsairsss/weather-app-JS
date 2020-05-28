@@ -1,8 +1,8 @@
-<div class="dayItem swiper-slide">
-    <p class="dayItem__weekDay">{{dayString}}</p>
-    <p class="dayItem__dayMonth">{{day}} {{month}}</p>
-    <img src="https://openweathermap.org/img/w/{{icon}}.png" alt="" />
-    <div class="min-max-block">
+<div class="dayItem swiper-slide" data-day="{{day}}">
+    <p class="dayItem__weekDay" data-day="{{day}}">{{dayString}}</p>
+    <p class="dayItem__dayMonth" data-day="{{day}}">{{day}} {{month}}</p>
+    <img src="https://openweathermap.org/img/w/{{icon}}.png" alt="" data-day="{{day}}" />
+    <div class="min-max-5block" data-day="{{day}}">
         <div class="min5">
             <div>min</div>
             <span class="min-value">{{temMin}}</span>
@@ -15,5 +15,5 @@
             <sup class="sup">°</sup>
         </div>
     </div>
-    <a href="#" class="dayItem__moreInfo">more info </a>
+    <a href="#" onClick="return false" class="dayItem__moreInfo" data-day="{{day}}">more info </a>
 </div>
