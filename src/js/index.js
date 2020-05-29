@@ -33,22 +33,24 @@ getGeoPosition()
     setTimeout(addClass, 1000);
     weatherWithGeoPosition();
     favoriteCityTemplate();
-    const mySwiper = new Swiper('.swiper1', {
-      slidesPerView: 3,
-      spaceBetween: 15,
-      freeMode: false,
-      loop: false,
-      breakpoints: {
-        768: {
-          slidesPerView: 4,
-          spaceBetween: 5,
+    if (localStorage.getItem('city')) {
+      const mySwiper = new Swiper('.swiper1', {
+        slidesPerView: 3,
+        spaceBetween: 15,
+        freeMode: false,
+        loop: false,
+        breakpoints: {
+          768: {
+            slidesPerView: 4,
+            spaceBetween: 5,
+          },
         },
-      },
-      pagination: {
-        el: '.sw1',
-        clickable: true,
-      },
-    });
+        pagination: {
+          el: '.sw1',
+          clickable: true,
+        },
+      });
+    }
   })
   .catch(error => {
     console.log(`GEO-ERROR:${error.message}`);
