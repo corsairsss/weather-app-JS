@@ -906,9 +906,12 @@ div {
   position: fixed;
   z-index: 1000;
 }
-
+.main-content-container {
+  display: none;
+}
 /* ----------------------------------- */
 .container {
+  background-color: #797e86;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

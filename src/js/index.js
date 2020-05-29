@@ -3,7 +3,7 @@ import 'swiper/css/swiper.css';
 import notyfOptions from '../config/notyf-options.js';
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
-import pixabayServices from './apiService.js';
+import pixabayServices from './apiServicePixabay.js';
 import openWeatherMap from './apiWeather.js';
 import fiveDays from './api5DaysWearher.js';
 import templateCurrentWeather from '../templates/weather-today.hbs';
@@ -18,14 +18,13 @@ import regeneratorRuntime from 'regenerator-runtime';
 import quote from './quote.js';
 
 const notyf = new Notyf(notyfOptions);
-const windowWidth = window.screen.width;
 // -------------------------------------
+
 const getGeoPosition = options => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject, options);
   });
 };
-
 getGeoPosition()
   .then(position => {
     openWeatherMap.latitude = position.coords.latitude;
@@ -53,6 +52,10 @@ getGeoPosition()
     }
   })
   .catch(error => {
+    addClass();
+    document
+      .querySelector('.main-container')
+      .classList.add('main-content-container');
     console.log(`GEO-ERROR:${error.message}`);
   });
 // -------------
@@ -94,6 +97,9 @@ function removeClass() {
 // ---------------------------------------------------
 function showWeather(e) {
   e.preventDefault();
+  document
+    .querySelector('.main-container')
+    .classList.remove('main-content-container');
   const queryValue = e.target.elements.inputSearch.value;
   openWeatherMap.searchquery = queryValue;
   fiveDays.searchquery = queryValue;
@@ -419,7 +425,9 @@ function getWeatherByFavoriteCity(e) {
     openWeatherMap.searchquery = e.target.textContent;
     fiveDays.searchquery = e.target.textContent;
     refs.btnCloseMoreInfoWeather.classList.add('unvisible');
-
+    document
+      .querySelector('.main-container')
+      .classList.remove('main-content-container');
     getWeatherByCity();
     getFiveDaysWeather();
   }
