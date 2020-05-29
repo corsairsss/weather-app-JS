@@ -51,7 +51,7 @@ getGeoPosition()
     });
   })
   .catch(error => {
-    console.log(`dkjfhkjfh${error.message}`);
+    console.log(`GEO-ERROR:${error.message}`);
   });
 // -------------
 
@@ -111,7 +111,9 @@ async function crateBackGroungImg() {
     const url = await pixabayServices.fetchArticles();
     refs.mainContainer.style.backgroundImage = `url(${url})`;
   } catch (error) {
-    refs.mainContainer.style.backgroundImage = `url(https://pixabay.com/get/54e3d74a4c5aac14f6da8c7dda7936781439dee751516c4870267bd2964ec75db1_1280.jpg)`;
+    pixabayServices.searchquery = 'weather';
+    const url = await pixabayServices.fetchArticles();
+    refs.mainContainer.style.backgroundImage = `url(${url})`;
     console.dir(`error:${error}`);
   }
 }
@@ -128,7 +130,6 @@ async function getWeatherByCity() {
   try {
     removeClass();
     setTimeout(addClass, 2000);
-    console.log(openWeatherMap.query);
     const objWithWeather = await openWeatherMap.fetchArticles();
     weatherALL(objWithWeather);
   } catch (error) {
@@ -248,6 +249,7 @@ function showAnotherDaysWearher(e) {
       'current-date-time-unactive',
     );
     showWeatherToday();
+    closeBlockWeatherPerHour();
   }
 }
 
@@ -293,7 +295,6 @@ function showFiveDaysWeather(arr) {
     };
     return obj;
   });
-  console.log(allDays);
   const arrayFivDeays = crateObjectsWithInfoWeatherForFiveDays(arr, allDays);
   fiveDaysFromTempalte(arrayFivDeays);
   refs.btnCloseMoreInfoWeather.classList.add('unvisible');
@@ -332,8 +333,6 @@ function crateObjectsWithInfoWeatherForFiveDays(arr, allDays) {
   const fourDAy = allDays.slice(firstDAy.length + 16, firstDAy.length + 24);
   const fiveDAy = allDays.slice(firstDAy.length + 24, firstDAy.length + 32);
   const sixDAy = allDays.slice(firstDAy.length + 32);
-  console.log(sixDAy);
-  console.log(sixDAy.length);
 
   const day1 = firstDAy[0];
   const day2 = secondDAy[0];
@@ -344,8 +343,6 @@ function crateObjectsWithInfoWeatherForFiveDays(arr, allDays) {
     day6 = sixDAy[0];
     day6.temMin = Math.round(Math.min(...sixDAy.map(el => el.temMin)));
     day6.temMax = Math.round(Math.max(...sixDAy.map(el => el.temMax)));
-    console.log(day6);
-    console.log('zero');
   }
   day1.temMin = Math.round(Math.min(...firstDAy.map(el => el.temMin)));
   day1.temMax = Math.round(Math.max(...firstDAy.map(el => el.temMax)));
@@ -359,8 +356,6 @@ function crateObjectsWithInfoWeatherForFiveDays(arr, allDays) {
   day5.temMax = Math.round(Math.max(...fiveDAy.map(el => el.temMax)));
 
   const objectFiveDays = [];
-  console.log(firstDAy);
-  console.log(firstDAy.length);
   firstDAy.length === 1
     ? objectFiveDays.push(day2, day3, day4, day5, day6)
     : objectFiveDays.push(day1, day2, day3, day4, day5);
@@ -445,12 +440,9 @@ function removeCityFromFavorite(city) {
 async function showMoreInfoWeather(e) {
   const currentDay = e.target.dataset.day;
 
-  console.log(currentDay);
-  console.dir(e.currentTarget);
   styleForDayItem(currentDay);
   const fullObjectFromRequest = await returnWeatherForFiveDays();
   const listWithObjectForFiveDays = fullObjectFromRequest.list;
-  console.log(listWithObjectForFiveDays);
   const weatherOneDay = listWithObjectForFiveDays.filter(el => {
     const dayNumber = date.format(
       new Date(el.dt * 1000 + openWeatherMap.timeZone),
@@ -476,6 +468,13 @@ async function showMoreInfoWeather(e) {
     'click',
     closeBlockWeatherPerHour,
   );
+  console.log(window.innerHeight);
+  console.log(document.body.clientHeight);
+  const scrollTo = document.body.clientHeight - window.innerHeight;
+  window.scrollTo({
+    top: scrollTo,
+    behavior: 'smooth',
+  });
   const mySwiper = new Swiper('.swiper3', {
     slidesPerView: 2,
     spaceBetween: 10,
