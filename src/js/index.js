@@ -316,6 +316,10 @@ function showFiveDaysWeather(arr) {
       el: '.sw2',
       clickable: true,
     },
+    navigation: {
+      nextEl: '.next',
+      prevEl: '.prev',
+    },
     breakpoints: {
       768: {
         slidesPerView: 5,
@@ -495,6 +499,10 @@ async function showMoreInfoWeather(e) {
     pagination: {
       el: '.sw3',
       clickable: true,
+    },
+    navigation: {
+      nextEl: '.next3',
+      prevEl: '.prev3',
     },
     breakpoints: {
       768: {

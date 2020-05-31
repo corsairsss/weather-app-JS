@@ -909,6 +909,22 @@ div {
 .main-content-container {
   display: none;
 }
+.btnControl {
+  transform: scale(0.4, 0.4);
+  height: 67px;
+  top: 196px;
+}
+.prev {
+  left: 40px;
+}
+.next {
+  right: 40px;
+}
+.prev3,
+.next3 {
+  top: 220px;
+}
+
 /* ----------------------------------- */
 .container {
   background-color: #797e86;
