@@ -386,6 +386,8 @@ function addCityToLocalStorage() {
   if (!localStorage.getItem('city')) {
     const localArray = JSON.stringify(openWeatherMap.query);
     localStorage.setItem('city', localArray);
+    notyf.open({ type: 'info' });
+    return;
   }
   const cityFromLocalStorage = JSON.parse(localStorage.getItem('city'));
 
